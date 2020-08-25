@@ -5,36 +5,36 @@ using Oqtane.Modules;
 using Oqtane.Models;
 using Oqtane.Infrastructure;
 using Oqtane.Repository;
-using [Owner].[Module]s.Models;
-using [Owner].[Module]s.Repository;
+using [Owner].[Module].Models;
+using [Owner].[Module].Repository;
 
-namespace [Owner].[Module]s.Manager
+namespace [Owner].[Module].Manager
 {
     public class [Module]Manager : IInstallable, IPortable
     {
-        private I[Module]Repository _[Module]s;
+        private I[Module]Repository _[Module]Repository;
         private ISqlRepository _sql;
 
-        public [Module]Manager(I[Module]Repository [Module]s, ISqlRepository sql)
+        public [Module]Manager(I[Module]Repository [Module]Repository, ISqlRepository sql)
         {
-            _[Module]s = [Module]s;
+            _[Module]Repository = [Module]Repository;
             _sql = sql;
         }
 
         public bool Install(Tenant tenant, string version)
         {
-            return _sql.ExecuteScript(tenant, GetType().Assembly, "[Owner].[Module]s." + version + ".sql");
+            return _sql.ExecuteScript(tenant, GetType().Assembly, "[Owner].[Module]." + version + ".sql");
         }
 
         public bool Uninstall(Tenant tenant)
         {
-            return _sql.ExecuteScript(tenant, GetType().Assembly, "[Owner].[Module]s.Uninstall.sql");
+            return _sql.ExecuteScript(tenant, GetType().Assembly, "[Owner].[Module].Uninstall.sql");
         }
 
         public string ExportModule(Module module)
         {
             string content = "";
-            List<[Module]> [Module]s = _[Module]s.Get[Module]s(module.ModuleId).ToList();
+            List<Models.[Module]> [Module]s = _[Module]Repository.Get[Module]s(module.ModuleId).ToList();
             if ([Module]s != null)
             {
                 content = JsonSerializer.Serialize([Module]s);
@@ -44,19 +44,16 @@ namespace [Owner].[Module]s.Manager
 
         public void ImportModule(Module module, string content, string version)
         {
-            List<[Module]> [Module]s = null;
+            List<Models.[Module]> [Module]s = null;
             if (!string.IsNullOrEmpty(content))
             {
-                [Module]s = JsonSerializer.Deserialize<List<[Module]>>(content);
+                [Module]s = JsonSerializer.Deserialize<List<Models.[Module]>>(content);
             }
             if ([Module]s != null)
             {
-                foreach([Module] [Module] in [Module]s)
+                foreach(var [Module] in [Module]s)
                 {
-                    [Module] _[Module] = new [Module]();
-                    _[Module].ModuleId = module.ModuleId;
-                    _[Module].Name = [Module].Name;
-                    _[Module]s.Add[Module](_[Module]);
+                    _[Module]Repository.Add[Module](new Models.[Module] { ModuleId = module.ModuleId, Name = [Module].Name });
                 }
             }
         }

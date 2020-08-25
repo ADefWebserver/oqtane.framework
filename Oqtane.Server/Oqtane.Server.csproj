@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>7.3</LangVersion>
     <Configurations>Debug;Release</Configurations>
-    <Version>1.0.1</Version>
+    <Version>1.0.3</Version>
     <Product>Oqtane</Product>
     <Authors>Shaun Walker</Authors>
     <Company>.NET Foundation</Company>
@@ -13,7 +13,7 @@
     <PackageProjectUrl>https://www.oqtane.org</PackageProjectUrl>
     <RepositoryUrl>https://github.com/oqtane</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <PackageReleaseNotes>https://github.com/oqtane/oqtane.framework/releases/tag/v1.0.1</PackageReleaseNotes>
+    <PackageReleaseNotes>https://github.com/oqtane/oqtane.framework/releases/tag/v1.0.3</PackageReleaseNotes>
     <RootNamespace>Oqtane</RootNamespace>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
@@ -21,9 +21,6 @@
     <Compile Remove="wwwroot\Modules\Templates\**" />
     <Content Remove="wwwroot\Modules\Templates\**" />
     <EmbeddedResource Remove="wwwroot\Modules\Templates\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Scripts\Tenant.01.00.02.01.sql" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Scripts\Master.00.00.00.00.sql" />
@@ -52,5 +49,16 @@
   <ItemGroup>
     <ProjectReference Include="..\Oqtane.Client\Oqtane.Client.csproj" />
     <ProjectReference Include="..\Oqtane.Shared\Oqtane.Shared.csproj" />
+    <ProjectReference Include="..\Oqtane.Upgrade\Oqtane.Upgrade.csproj" />
   </ItemGroup>
-</Project>
+  <ItemGroup>
+    <UpgradeFiles Include="$(ProjectDir)bin\Release\netcoreapp3.1\Oqtane.Upgrade.deps.json" />
+    <UpgradeFiles Include="$(ProjectDir)bin\Release\netcoreapp3.1\Oqtane.Upgrade.dll" />
+    <UpgradeFiles Include="$(ProjectDir)bin\Release\netcoreapp3.1\Oqtane.Upgrade.pdb" />
+    <UpgradeFiles Include="$(ProjectDir)bin\Release\netcoreapp3.1\Oqtane.Upgrade.runtimeconfig.json" />
+    <TemplateFiles Include="$(ProjectDir)wwwroot\Modules\Templates\**\*.*" />
+  </ItemGroup>
+  <Target Name="AddPayloadsFolder" AfterTargets="Publish">
+    <Copy SourceFiles="@(UpgradeFiles)" DestinationFiles="@(UpgradeFiles->'$(PublishDir)%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" />
+    <Copy SourceFiles="@(TemplateFiles)" DestinationFiles="@(TemplateFiles->'$(PublishDir)wwwroot\Modules\Templates\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" />
+  </Target></Project>

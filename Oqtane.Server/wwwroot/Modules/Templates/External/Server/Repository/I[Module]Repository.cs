@@ -1,14 +1,14 @@
 using System.Collections.Generic;
-using [Owner].[Module]s.Models;
+using [Owner].[Module].Models;
 
-namespace [Owner].[Module]s.Repository
+namespace [Owner].[Module].Repository
 {
     public interface I[Module]Repository
     {
-        IEnumerable<[Module]> Get[Module]s(int ModuleId);
-        [Module] Get[Module](int [Module]Id);
-        [Module] Add[Module]([Module] [Module]);
-        [Module] Update[Module]([Module] [Module]);
+        IEnumerable<Models.[Module]> Get[Module]s(int ModuleId);
+        Models.[Module] Get[Module](int [Module]Id);
+        Models.[Module] Add[Module](Models.[Module] [Module]);
+        Models.[Module] Update[Module](Models.[Module] [Module]);
         void Delete[Module](int [Module]Id);
     }
 }

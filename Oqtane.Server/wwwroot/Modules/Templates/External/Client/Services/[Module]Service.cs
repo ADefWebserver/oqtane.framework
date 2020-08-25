@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Oqtane.Modules;
 using Oqtane.Services;
 using Oqtane.Shared;
-using [Owner].[Module]s.Models;
+using [Owner].[Module].Models;
 
-namespace [Owner].[Module]s.Services
+namespace [Owner].[Module].Services
 {
     public class [Module]Service : ServiceBase, I[Module]Service, IService
     {
@@ -20,42 +20,30 @@ namespace [Owner].[Module]s.Services
 
          private string Apiurl => CreateApiUrl(_siteState.Alias, "[Module]");
 
-        public async Task<List<[Module]>> Get[Module]sAsync(int ModuleId)
+        public async Task<List<Models.[Module]>> Get[Module]sAsync(int ModuleId)
         {
-            List<[Module]> [Module]s = await GetJsonAsync<List<[Module]>>(CreateAuthPolicyUrl($"{Apiurl}?moduleid={ModuleId}", ModuleId));
+            List<Models.[Module]> [Module]s = await GetJsonAsync<List<Models.[Module]>>(CreateAuthorizationPolicyUrl($"{Apiurl}?moduleid={ModuleId}", ModuleId));
             return [Module]s.OrderBy(item => item.Name).ToList();
         }
 
-        public async Task<[Module]> Get[Module]Async(int [Module]Id, int ModuleId)
+        public async Task<Models.[Module]> Get[Module]Async(int [Module]Id, int ModuleId)
         {
-            return await GetJsonAsync<[Module]>(CreateAuthPolicyUrl($"{Apiurl}/{[Module]Id}", ModuleId));
+            return await GetJsonAsync<Models.[Module]>(CreateAuthorizationPolicyUrl($"{Apiurl}/{[Module]Id}", ModuleId));
         }
 
-        public async Task<[Module]> Add[Module]Async([Module] [Module])
+        public async Task<Models.[Module]> Add[Module]Async(Models.[Module] [Module])
         {
-            return await PostJsonAsync<[Module]>(CreateAuthPolicyUrl($"{Apiurl}", [Module].ModuleId), [Module]);
+            return await PostJsonAsync<Models.[Module]>(CreateAuthorizationPolicyUrl($"{Apiurl}", [Module].ModuleId), [Module]);
         }
 
-        public async Task<[Module]> Update[Module]Async([Module] [Module])
+        public async Task<Models.[Module]> Update[Module]Async(Models.[Module] [Module])
         {
-            return await PutJsonAsync<[Module]>(CreateAuthPolicyUrl($"{Apiurl}/{[Module].[Module]Id}", [Module].ModuleId), [Module]);
+            return await PutJsonAsync<Models.[Module]>(CreateAuthorizationPolicyUrl($"{Apiurl}/{[Module].[Module]Id}", [Module].ModuleId), [Module]);
         }
 
         public async Task Delete[Module]Async(int [Module]Id, int ModuleId)
         {
-            await DeleteAsync(CreateAuthPolicyUrl($"{Apiurl}/{[Module]Id}", ModuleId));
-        }
-
-        private string CreateAuthPolicyUrl(string Url, int ModuleId)
-        {
-            if (Url.Contains("?"))
-            {
-                return Url + "&entityid=" + ModuleId.ToString();
-            }
-            else
-            {
-                return Url + "?entityid=" + ModuleId.ToString();
-            }
+            await DeleteAsync(CreateAuthorizationPolicyUrl($"{Apiurl}/{[Module]Id}", ModuleId));
         }
     }
 }

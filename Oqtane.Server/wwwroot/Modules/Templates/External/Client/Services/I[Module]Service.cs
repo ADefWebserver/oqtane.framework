@@ -1,18 +1,18 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using [Owner].[Module]s.Models;
+using [Owner].[Module].Models;
 
-namespace [Owner].[Module]s.Services
+namespace [Owner].[Module].Services
 {
     public interface I[Module]Service 
     {
-        Task<List<[Module]>> Get[Module]sAsync(int ModuleId);
+        Task<List<Models.[Module]>> Get[Module]sAsync(int ModuleId);
 
-        Task<[Module]> Get[Module]Async(int [Module]Id, int ModuleId);
+        Task<Models.[Module]> Get[Module]Async(int [Module]Id, int ModuleId);
 
-        Task<[Module]> Add[Module]Async([Module] [Module]);
+        Task<Models.[Module]> Add[Module]Async(Models.[Module] [Module]);
 
-        Task<[Module]> Update[Module]Async([Module] [Module]);
+        Task<Models.[Module]> Update[Module]Async(Models.[Module] [Module]);
 
         Task Delete[Module]Async(int [Module]Id, int ModuleId);
     }
