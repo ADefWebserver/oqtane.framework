@@ -1,5 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Oqtane.Shared;
 
@@ -16,14 +17,15 @@ namespace Oqtane.Modules.Controls
 
         protected string Localize(string name)
         {
+            var key = $"{ResourceKey}.{name}";
+
+            // TODO: we should have a ShowMissingResourceKeys option which developers/translators can enable to find missing translations which would display the key rather than the name    
             if (!IsLocalizable)
             {
-                return null;
+                return name;
             }
-
-            var key = $"{ResourceKey}.{name}";
  
-            return _localizer?[key] ?? key;
+            return _localizer?[key] ?? name;
         }
 
         protected override void OnParametersSet()
@@ -33,13 +35,13 @@ namespace Oqtane.Modules.Controls
                 if (ModuleState?.ModuleType != null)
                 {
                     var moduleType = Type.GetType(ModuleState.ModuleType);
-                    var localizerTypeName = $"Microsoft.Extensions.Localization.IStringLocalizer`1[[{moduleType.AssemblyQualifiedName}]], Microsoft.Extensions.Localization.Abstractions";
-                    var localizerType = Type.GetType(localizerTypeName);
-
-                    // HACK: Use ServiceActivator instead of injecting IHttpContextAccessor, because HttpContext throws NRE in WebAssembly runtime
-                    using (var scope = ServiceActivator.GetScope())
+                    if (moduleType != null)
                     {
-                        _localizer = (IStringLocalizer)scope.ServiceProvider.GetService(localizerType);
+                        using (var scope = ServiceActivator.GetScope())
+                        {
+                            var localizerFactory = scope.ServiceProvider.GetService<IStringLocalizerFactory>();
+                            _localizer = localizerFactory.Create(moduleType);
+                        }
                     }
                 }
 
